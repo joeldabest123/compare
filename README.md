@@ -1,2 +1,3 @@
 # compare
-Systems Programming Project 2
+Joel Anderson - JEA211
+
