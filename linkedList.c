@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdint.h>
-#include "linkedList.h";
+#include "linkedList.h"
 
 //initializers
 
@@ -132,12 +132,17 @@ void insert (List *l, const char *key) {
     
 }
 
-void remove () {
+void freeList (List* l) {
+    Node* ptr = l->head;
+    Node* next;
 
-}
-
-void free () {
-
+    while(ptr != NULL) {
+        next = ptr->next;
+        free(ptr->data);
+        free(ptr);
+        ptr = next;
+    }
+    free(l);
 }
 
 //remember to free
