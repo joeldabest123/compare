@@ -13,6 +13,6 @@ typedef struct linkedList {
 
 } List;
 
-int countWord (List *, const char *);
+int addToCount (List *, const char *);
 
 #endif

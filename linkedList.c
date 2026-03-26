@@ -5,7 +5,37 @@
 #include <stdint.h>
 #include "linkedList.h";
 
-int addToCount (List *l, const char *key) {
+//initializers
+
+List* initializeList () {
+
+    List* l = malloc(sizeof(List));
+
+    if (l == NULL) {
+        return NULL;
+    }
+    l->totalCount = 0;
+    l->head = NULL;
+    return l;
+}
+
+Node* initializeNode (List* l, const char* word) {
+    Node* n = malloc(sizeof(Node));
+
+    if(n == NULL) {
+        return NULL;
+    }
+    n->data = word;
+    n->counter = 0;
+    n->next = NULL;
+    l->totalCount++;
+    return n;
+}
+
+
+//word counter
+
+int addToCount (List* l, const char *key) {
     Node *ptr = l->head;
     int i = 0;
 
@@ -18,7 +48,7 @@ int addToCount (List *l, const char *key) {
         i++;
     }
 
-    return -1;
+    return -1; //tokenizer sees -1 and calls initalizer
 }
 
 Node* search(List *l, const char *key) {
@@ -32,13 +62,42 @@ Node* search(List *l, const char *key) {
         ptr = ptr->next;
         i++;
     }
-    return 
+    return NULL;
 }
 
-void insert () {
+void alphabetical(List *l, const char *key) {
+    Node* ptr = l->head;
+    Node* prev = l->head;
+    Node* biggest = l->head;
+
+    int i = 0;
+    while(i < l->totalCount) {
+        
+    }
+}
+
+void insert (List *l, const char *key) {
+    if(l->head == NULL) {
+        initializeNode(l, key);
+        return;
+    }
+
+    Node* found = search(l, key);
+
+    if(found != NULL) {
+        return;
+    }
+    alphabetical(l, key);
+
     
 }
 
 void remove () {
 
 }
+
+void free () {
+
+}
+
+//remember to free
