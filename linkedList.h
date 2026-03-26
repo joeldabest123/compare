@@ -13,6 +13,11 @@ typedef struct linkedList {
 
 } List;
 
-int addToCount (List *, const char *);
+List* initializeList ();
+Node* initializeNode (List*, const char*);
+Node* search(List *, const char *);
+void alphabetical(List *, const char *);
+void insert (List *, const char *);
+void freeList (List* );
 
 #endif
