@@ -40,6 +40,7 @@ Node* search(List *l, const char *key) {
 
     while(i < l->totalCount) {
         if(strcmp(ptr->data, key) == 0) {
+            ptr->counter++;
             return ptr;
         }
         ptr = ptr->next;
