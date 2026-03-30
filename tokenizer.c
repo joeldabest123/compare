@@ -25,7 +25,7 @@ char* bufferBuilder(const char *path, struct dirent* entry) {
 }
 
 
-void buffToList(char* buffer, long fileSize, List* words) {
+void buffToList(char* buffer, off_t fileSize, List* words) {
 
     int start = 0;
     int end = 0;
@@ -56,7 +56,7 @@ void buffToList(char* buffer, long fileSize, List* words) {
     }
 }
 
-void tokenize(const char *file, long fileSize, List* words) {
+void tokenize(const char *file, off_t fileSize, List* words) {
     int fd = open(file, O_RDONLY);
     char val;
     char* buffer = malloc(fileSize + 1);
