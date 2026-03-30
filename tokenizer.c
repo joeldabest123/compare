@@ -6,8 +6,10 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <ctype.h>
 #include "tokenizer.h"
 #include "linkedList.h"
+
 
 
 
@@ -40,9 +42,20 @@ void buffToList(char* buffer, off_t fileSize, List* words) {
             buffer[end] = '\0';
             if (end > start) {
                 word = malloc(end + 1 - start);
-                strncpy(word, &buffer[start], end - start);
-                word[end - start] = '\0';
-                insert(words, word);
+                int counter = 0;
+                for(int i = start; i < end; i++) {
+                    if(isalnum(buffer[i]) != 0 || buffer[i] == '-') {
+                        word[counter] = tolower(buffer[i]);
+                        counter++;
+                    }
+                }
+                word[counter] = '\0';
+
+                if (counter > 0) {
+                    insert(words, word);
+                } else {
+                    free(word);
+                }
             }
                 start = end + 1;
 
