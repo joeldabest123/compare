@@ -12,11 +12,35 @@ List* initializeList () {
     List* l = malloc(sizeof(List));
 
     if (l == NULL) {
+        perror("malloc failed");
         return NULL;
     }
     l->totalCount = 0;
     l->head = NULL;
     return l;
+}
+
+List** initalizeArray () {
+    List **allFiles = malloc(10 * sizeof(List*));
+
+    if(allFiles == NULL) {
+        perror("malloc failed");
+        return NULL;
+    }
+
+    return allFiles;
+}
+
+List** lengthenArray (List **allFiles, int* capacity) {
+    int length = sizeof(List*) * *capacity;
+    
+    allFiles = realloc(allFiles, length*2);
+
+    if(allFiles == NULL) {
+        perror("realloc failed");
+        return allFiles;
+    }
+    return allFiles;
 }
 
 Node* initializeNode (List* l, const char* word) {
@@ -133,7 +157,7 @@ void insert (List *l, const char *key) {
     
 }
 
-void freeList (List* l) {
+void clearList (List* l) {
     Node* ptr = l->head;
     Node* next;
 
@@ -143,5 +167,5 @@ void freeList (List* l) {
         free(ptr);
         ptr = next;
     }
-    free(l);
+    l->head = NULL;
 }

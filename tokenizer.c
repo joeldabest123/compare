@@ -32,6 +32,7 @@ void buffToList(char* buffer, off_t fileSize, List* words) {
 
     int start = 0;
     int end = 0;
+    int wordCounter = 0;
     char* word;
 
     while(buffer[start] == ' ') {
@@ -54,6 +55,7 @@ void buffToList(char* buffer, off_t fileSize, List* words) {
 
                 if (counter > 0) {
                     insert(words, word);
+                    wordCounter++;
                 } else {
                     free(word);
                 }
@@ -68,6 +70,7 @@ void buffToList(char* buffer, off_t fileSize, List* words) {
         }
         
     }
+    wfd(words, wordCounter);
 }
 
 void tokenize(const char *file, off_t fileSize, List* words) {
@@ -95,7 +98,7 @@ void tokenize(const char *file, off_t fileSize, List* words) {
 }
 
 
-void paceDirectories(const char *path, List* words) {
+void paceDirectories(const char *path, List* words, List*** allFiles, int* capacity, int *count) {
     DIR* d = opendir(path);
 
     if(d == NULL) {
@@ -125,14 +128,16 @@ void paceDirectories(const char *path, List* words) {
 
                 if(strcmp(suffix, ".txt") == 0) {
                     tokenize(fullPath, st.st_size, words);
-                    
-                    //math.c function goes here
-                    //something that involves words
+                    (*count)++;
+                    if(*count == *capacity) {
+                        *allFiles = lengthenArray(*allFiles, capacity);
+                        *capacity = *capacity * 2;
+                    }
                 };
             }
         } else {
             if (S_ISDIR(st.st_mode)) {
-                paceDirectories(fullPath, words);
+                paceDirectories(fullPath, words, allFiles, capacity, count);
             }
         }
 
