@@ -145,5 +145,3 @@ void freeList (List* l) {
     }
     free(l);
 }
-
-//remember to free

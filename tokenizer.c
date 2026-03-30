@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include "tokenizer.h"
 #include "linkedList.h"
+#include "math.h"
 
 
 
@@ -109,7 +110,7 @@ void paceDirectories(const char *path, List* words) {
 
 
         fileName = entry->d_name;
-        if(strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) {
+        if(strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0 || fileName[0] == '.') {
             continue;
         }
 
@@ -124,6 +125,7 @@ void paceDirectories(const char *path, List* words) {
 
                 if(strcmp(suffix, ".txt") == 0) {
                     tokenize(fullPath, st.st_size, words);
+                    //math.c function goes here
                 };
             }
         } else {
