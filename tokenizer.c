@@ -46,7 +46,7 @@ void buffToList(char* buffer, long fileSize, List* words) {
             }
                 start = end + 1;
 
-            while(buffer[start] == ' ') {
+            while(start < fileSize && buffer[start] == ' ') {
                 start++;
             }
             end = start - 1;
@@ -89,15 +89,14 @@ void paceDirectories(const char *path, List* words) {
         return;
     }
 
-    struct dirent* entry = readdir(d);
-    int bufferCount = 0;
+    struct dirent* entry;
     char* fileName;
 
-    while(entry != NULL) {
+    while((entry = readdir(d)) != NULL) {
+
 
         fileName = entry->d_name;
         if(strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) {
-            entry = readdir(d);
             continue;
         }
 
@@ -121,7 +120,6 @@ void paceDirectories(const char *path, List* words) {
         }
 
         free(fullPath);
-        entry = readdir(d);
 
     }
 
