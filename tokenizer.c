@@ -125,7 +125,9 @@ void paceDirectories(const char *path, List* words) {
 
                 if(strcmp(suffix, ".txt") == 0) {
                     tokenize(fullPath, st.st_size, words);
+                    
                     //math.c function goes here
+                    //something that involves words
                 };
             }
         } else {
