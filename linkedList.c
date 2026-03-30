@@ -20,7 +20,7 @@ List* initializeList () {
     return l;
 }
 
-List** initalizeArray () {
+List** initailizeArray () {
     List **allFiles = malloc(10 * sizeof(List*));
 
     if(allFiles == NULL) {
@@ -51,6 +51,8 @@ Node* initializeNode (List* l, const char* word) {
     }
     n->data = strdup(word);
     n->counter = 0;
+    n->mean = 0;
+    n->seen = 0;
     n->next = NULL;
     l->totalCount++;
     return n;
@@ -157,15 +159,23 @@ void insert (List *l, const char *key) {
     
 }
 
-void clearList (List* l) {
-    Node* ptr = l->head;
-    Node* next;
+void clearList (List** allFiles) {
 
-    while(ptr != NULL) {
-        next = ptr->next;
-        free(ptr->data);
-        free(ptr);
-        ptr = next;
+    int counter = 0;
+    int total = allFiles->;
+    while(allFiles != NULL) {
+        List* temp = allFiles[counter];
+
+        Node* ptr = temp->head;
+        Node* next;
+
+        while(ptr != NULL) {
+            next = ptr->next;
+            free(ptr->data);
+            free(ptr);
+            ptr = next;
+        }
+        free(temp->head);
+        counter++;
     }
-    l->head = NULL;
 }

@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include "linkedList.h"
 
-void wfd(List* ,int);
+void wfd(List** ,int);
+void looper(List**, int);
 
 #endif

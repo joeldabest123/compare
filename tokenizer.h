@@ -8,6 +8,6 @@
 char* bufferBuilder(const char *, struct dirent*);
 void buffToList(char* , off_t , List* );
 void tokenize(const char *, off_t , List* );
-void paceDirectories(const char *, List*, List*** , int* , int* );
+void paceDirectories(const char *, List*** , int* , int* );
 
 #endif

@@ -4,7 +4,9 @@
 typedef struct Node {
     char* data;
     double counter;
+    double mean;
     struct Node *next;
+    short seen;
 } Node;
 
 typedef struct linkedList {
@@ -13,7 +15,7 @@ typedef struct linkedList {
 
 } List;
 
-List** initalizeArray ();
+List** initializeArray ();
 List** lengthenArray (List **, int*);
 List* initializeList ();
 Node* initializeNode (List*, const char*);
