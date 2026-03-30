@@ -10,12 +10,78 @@
 #include "linkedList.h"
 
 
-//something like if addToCount == -1, insert new Node
-
-//reads from file, then calls add to count. 
 
 
-void paceDirectories(const char *path) {
+char* bufferBuilder(const char *path, struct dirent* entry) {
+    int bufferCount = 0;
+    char* fileName = entry->d_name;
+
+    bufferCount = strlen(path) + 1 + strlen(fileName) + 1;
+
+    char * tempBuffer = malloc(bufferCount);
+    snprintf(tempBuffer, bufferCount, "%s/%s", path, fileName);
+    
+    return tempBuffer;
+}
+
+
+void buffToList(char* buffer, long fileSize, List* words) {
+
+    int start = 0;
+    int end = 0;
+    char* word;
+
+    while(buffer[start] == ' ') {
+        start++;
+    }
+
+    for(int end = 0; end < fileSize; end++) {
+        if((buffer[end]) == ' ' || buffer[end] == '\0') {
+            buffer[end] = '\0';
+            if (end > start) {
+                word = malloc(end + 1 - start);
+                strncpy(word, &buffer[start], end - start);
+                word[end - start] = '\0';
+                insert(words, word);
+            }
+                start = end + 1;
+
+            while(buffer[start] == ' ') {
+                start++;
+            }
+            end = start - 1;
+            
+        }
+        
+    }
+}
+
+void tokenize(const char *file, long fileSize, List* words) {
+    int fd = open(file, O_RDONLY);
+    char val;
+    char* buffer = malloc(fileSize + 1);
+
+    if(fd == -1) {
+        perror("Error opening file");
+        return;
+    }
+
+    int check = read(fd, buffer, fileSize);
+    buffer[fileSize] = '\0';
+
+    if(check == -1) {
+        perror("tokenizing error");
+        return;
+    }
+
+    buffToList(buffer, fileSize, words);
+
+    free(buffer);
+    close(fd);
+}
+
+
+void paceDirectories(const char *path, List* words) {
     DIR* d = opendir(path);
 
     if(d == NULL) {
@@ -45,12 +111,12 @@ void paceDirectories(const char *path) {
                 char* suffix = fileName + (entryLength - 4);
 
                 if(strcmp(suffix, ".txt") == 0) {
-                    tokenize(fullPath);
+                    tokenize(fullPath, st.st_size, words);
                 };
             }
         } else {
             if (S_ISDIR(st.st_mode)) {
-                paceDirectories(fullPath);
+                paceDirectories(fullPath, words);
             }
         }
 
@@ -61,32 +127,3 @@ void paceDirectories(const char *path) {
 
     closedir(d);
 }
-
-char* bufferBuilder(const char *path, struct dirent* entry) {
-    int bufferCount = 0;
-    char* fileName = entry->d_name;
-
-    bufferCount = strlen(path) + 1 + strlen(fileName) + 1;
-
-    char * tempBuffer = malloc(bufferCount);
-    snprintf(tempBuffer, bufferCount, "%s/%s", path, fileName);
-    
-    return tempBuffer;
-}
-
-void tokenize(const char *file) {
-    int fd = open(file, O_RDONLY);
-
-    if(fd == -1) {
-        perror("Error opening file");
-        return;
-    }
-
-    while()
-
-    if()
-
-    close(file);
-}
-
-//int fd = open(path, O_RDONLY);
