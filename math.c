@@ -41,8 +41,8 @@ JSDResult jsd(List* file1, List* file2) {
 
                 double m = 0.5 * (p + q);
 
-                double firstTerm = (p * log2(p / m)); //calculates KLD from here
-                double secondTerm = (q * log2(q / m));
+                double firstTerm = 0.5 * (p * log2(p / m)); //calculates KLD from here
+                double secondTerm = 0.5 * (q * log2(q / m));
                 totalJSD += (firstTerm + secondTerm);
                 break;
             }
@@ -50,7 +50,7 @@ JSDResult jsd(List* file1, List* file2) {
         }
 
         if(found == 0) { //if a word from first file isn't found in second, runs process
-            totalJSD += (ptr1->mean * log2(2));
+            totalJSD += 0.5 * (ptr1->mean * log2(2.0));
         }
         ptr1 = ptr1->next;
         ptr2 = file2->head;
@@ -62,7 +62,7 @@ JSDResult jsd(List* file1, List* file2) {
     while(ptr2 != NULL) { //runs opposite process to check all file2 words not in first list
    
         if(ptr2->seen == 0) {          
-            totalJSD += (ptr2->mean * log2(2));
+            totalJSD += 0.5 * (ptr2->mean * log2(2.0));
         } else {
             ptr2->seen = 0;
         }
@@ -70,7 +70,7 @@ JSDResult jsd(List* file1, List* file2) {
         ptr2 = ptr2->next;
 
     }
-    totalJSD = sqrt(totalJSD * 0.5);
+    totalJSD = sqrt(totalJSD);
 
     JSDResult res;
     res.distance = totalJSD;
