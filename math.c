@@ -49,7 +49,7 @@ JSDResult jsd(List* file1, List* file2) {
             ptr2 = ptr2->next;
         }
 
-        if(found == 0) { //if a word from first file isn't found in second, runs process
+        if(found == 0) { //if a word from first file isn't found in second, does missing word penalty
             totalJSD += 0.5 * (ptr1->mean * log2(2.0));
         }
         ptr1 = ptr1->next;
