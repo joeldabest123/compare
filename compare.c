@@ -32,7 +32,7 @@ int main (int argc, char* argv[]) {
 
             //runs through directories and files to get to the lowest files
             //Then reads said files and writes them to the master allfiles
-            paceDirectories(argv[i], allFiles, &fileCount, &capacity);
+            paceDirectories(argv[i], &allFiles, &fileCount, &capacity);
         } else if (S_ISREG(arg_st.st_mode)) {
             //checks if more space is needed for stuff in master array
             if(fileCount >= capacity) {

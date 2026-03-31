@@ -13,7 +13,7 @@ typedef struct {
 
 void wfd(List** ,int);
 void looper(List**, int);
-void jsd(List* , List* );
+JSDResult jsd(List* , List* );
 int compareResults(const void* a, const void* b);
 
 #endif
