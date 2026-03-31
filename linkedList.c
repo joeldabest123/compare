@@ -7,7 +7,7 @@
 
 //initializers
 
-List* initializeList () {
+List* initializeList (const char* path) {
 
     List* l = malloc(sizeof(List));
 
@@ -17,10 +17,11 @@ List* initializeList () {
     }
     l->totalCount = 0;
     l->head = NULL;
+    l->name = strdup(path);
     return l;
 }
 
-List** initailizeArray () {
+List** initializeArray () {
     List **allFiles = malloc(10 * sizeof(List*));
 
     if(allFiles == NULL) {
@@ -31,16 +32,18 @@ List** initailizeArray () {
     return allFiles;
 }
 
+    // doubling the size of the array for more storage
 List** lengthenArray (List **allFiles, int* capacity) {
-    int length = sizeof(List*) * *capacity;
+    *capacity = (*capacity) * 2;
     
-    allFiles = realloc(allFiles, length*2);
+    //reallocating by doing the number of slots * 8 bytes (size of a pointer)
+    List **temp = realloc(allFiles, (*capacity) * sizeof(List*));
 
     if(allFiles == NULL) {
         perror("realloc failed");
         return allFiles;
     }
-    return allFiles;
+    return temp;
 }
 
 Node* initializeNode (List* l, const char* word) {
@@ -159,11 +162,10 @@ void insert (List *l, const char *key) {
     
 }
 
-void clearList (List** allFiles) {
+void clearList (List** allFiles, int fileCount) {
 
     int counter = 0;
-    int total = allFiles->;
-    while(allFiles != NULL) {
+    while(counter < fileCount) {
         List* temp = allFiles[counter];
 
         Node* ptr = temp->head;
@@ -171,11 +173,14 @@ void clearList (List** allFiles) {
 
         while(ptr != NULL) {
             next = ptr->next;
-            free(ptr->data);
-            free(ptr);
+            free(temp->name); //frees path name
+            free(ptr->data); //frees the word
+            free(ptr); //frees the node
             ptr = next;
         }
-        free(temp->head);
+        free(temp);
+
         counter++;
     }
+    free(allFiles);
 }

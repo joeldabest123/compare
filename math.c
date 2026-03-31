@@ -60,11 +60,9 @@ void jsd(List* file1, List* file2) {
         ptr2 = ptr2->next;
 
     }
-    totalJSD = totalJSD * 0.5;
-    totalJSD = sqrt(totalJSD);
+    totalJSD = sqrt(totalJSD * 0.5);
 
-    // print(totalJSD); or something
-    //sending to a print function
+    print("%.5f %s %s\n", totalJSD, file1->name, file2->name);
 }
 
 void looper(List** allFiles, int fileCount) {

@@ -6,16 +6,37 @@
 #include "linkedList.h"
 #include "tokenizer.h"
 
-void print() {
+int main (int argc, char* argv[]) {
+    if(argc < 2 ) {
+        printf("Usage: %s <directory_path>\n", argv[0]);
+        return 1;
+    }
 
-}
+    int capacity = 10;
+    int fileCount = 0;
 
-char main (int argc, char* argv[]) {
-    char* file1 = argv[0];
-    char* file2 = argv[1];
-    initializeList
+    //Setting up my glorious Master Array
+    List ** allFiles = initializeArray();
 
+    //runs through directories and files to get to the lowest files
+    //Then reads said files and writes them to the master allfiles
+    paceDirectories(argv[1], &allFiles, &fileCount, &capacity);
 
-    
-    //free(list);
+    if(fileCount < 2) {
+        printf("Error: Found %d .txt files. Need at least 2 for comparison.\n", fileCount);
+        clearList(allFiles, fileCount); //cleans array out prematurely.
+        return 1;
+    }
+    //runs through all files and compares all words
+    //also grabs the means from like-words
+    wfd(allFiles, fileCount);
+
+    //runs the comparison loops to get the JSD
+    looper(allFiles, fileCount);
+
+    //Final cleanup and frees everything
+    clearList(allFiles, fileCount);
+
+    return 0;
+
 }

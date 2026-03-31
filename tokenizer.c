@@ -120,19 +120,19 @@ void paceDirectories(const char *path, List*** allFiles, int* capacity, int *cou
         struct stat st;
 
         stat(fullPath, &st);
+        
         if(S_ISREG(st.st_mode)) {
             int entryLength = strlen(fileName);
             if(entryLength >= 4) {
                 char* suffix = fileName + (entryLength - 4);
 
                 if(strcmp(suffix, ".txt") == 0) {
-                    List* words = initalizeList();
+                    List* words = initalizeList(fullPath);
                     tokenize(fullPath, st.st_size, words);
                     (*allFiles)[*count] = words;
                     (*count)++;
                     if(*count == *capacity) {
                         *allFiles = lengthenArray(*allFiles, capacity);
-                        *capacity = *capacity * 2;
                     }
                 };
             }
@@ -145,7 +145,6 @@ void paceDirectories(const char *path, List*** allFiles, int* capacity, int *cou
         free(fullPath);
 
     }
-    wfd(allFiles, *count);
 
     closedir(d);
 }
