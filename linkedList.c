@@ -5,14 +5,13 @@
 #include <stdint.h>
 #include "linkedList.h"
 
-//initializers
-
+//initializers a linkedList with full setup
 List* initializeList (const char* path) {
 
     List* l = malloc(sizeof(List));
 
     if (l == NULL) {
-        perror("malloc failed");
+        perror("malloc failed"); //precautionary for if malloc fails
         return NULL;
     }
     l->totalCount = 0;
@@ -21,6 +20,7 @@ List* initializeList (const char* path) {
     return l;
 }
 
+//initialized the array of LinkedLists (The master array)
 List** initializeArray () {
     List **allFiles = malloc(10 * sizeof(List*));
 
@@ -39,30 +39,31 @@ List** lengthenArray (List **allFiles, int* capacity) {
     //reallocating by doing the number of slots * 8 bytes (size of a pointer)
     List **temp = realloc(allFiles, (*capacity) * sizeof(List*));
 
-    if(allFiles == NULL) {
-        perror("realloc failed");
+    if(temp == NULL) {
+        perror("realloc failed"); //kinda self explanatory
         return allFiles;
     }
     return temp;
 }
 
+//sets up nodes
 Node* initializeNode (List* l, const char* word) {
     Node* n = malloc(sizeof(Node));
 
     if(n == NULL) {
         return NULL;
     }
-    n->data = strdup(word);
-    n->counter = 0;
-    n->mean = 0;
-    n->seen = 0;
-    n->next = NULL;
-    l->totalCount++;
+    n->data = strdup(word); //sets up a node for each word
+    n->counter = 0; //the amount of times the word is called per file
+    n->mean = 0; //the mean of the word compared to all words in the file
+    n->seen = 0; //if the word has been paced through or not
+    n->next = NULL; //the next node/word in line
+    l->totalCount++; //the total count of words in the list is incremented
     return n;
 }
 
 
-
+//searched for a word in a given linkedList
 Node* search(List *l, const char *key) {
     Node *ptr = l->head;
     int i = 0;
@@ -78,18 +79,18 @@ Node* search(List *l, const char *key) {
     return NULL;
 }
 
+//alphabetizes the list so the nodes are in order (I despised writing this)
 void alphabetical(List *l, const char *key) {
     Node* ptr = l->head;
     Node* prev = l->head;
-    Node* prevHead = l->head;
     Node* smaller = initializeNode(l, key);
     int firstletkey = (int)key[0];
     int firstletnode;
 
     int i = 1;
-    while(i < l->totalCount) {
-        firstletkey = (int)key[0];
-        firstletnode =(int) ptr->data[0];
+    while(i < l->totalCount) { //loops through all nodes
+        firstletkey = (int)key[0]; //grabs the first letter of the key search word
+        firstletnode =(int) ptr->data[0]; //grabs the first letter of the given node
 
         if(firstletkey < firstletnode) {
             smaller->next = ptr;
@@ -143,6 +144,7 @@ void alphabetical(List *l, const char *key) {
 
 }
 
+//inserts a node into the list
 void insert (List *l, const char *key) {
     if(l->head == NULL) {
         l->head = initializeNode(l, key);
@@ -157,11 +159,12 @@ void insert (List *l, const char *key) {
         return;
     }
 
-    alphabetical(l, key);
+    alphabetical(l, key); //calls alphabetical to sort the list
 
     
 }
 
+//frees all malloc'd values from master list and individual lists within
 void clearList (List** allFiles, int fileCount) {
 
     int counter = 0;

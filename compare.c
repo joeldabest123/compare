@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "linkedList.h"
 #include "tokenizer.h"
+#include "math.h"
 
 int main (int argc, char* argv[]) {
     if(argc < 2 ) {
