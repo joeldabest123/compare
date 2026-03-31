@@ -20,7 +20,7 @@ int compareResults(const void* a, const void* b) {
 JSDResult jsd(List* file1, List* file2) {
 
     Node* ptr1 = file1->head;
-    Node* ptr2 = file2->head;
+    Node* ptr2;
     char* key;
     char* searchVal;
 
@@ -30,6 +30,8 @@ JSDResult jsd(List* file1, List* file2) {
         key = ptr1->data;
         int found = 0;
 
+        ptr2 = file2->head;
+
         while(ptr2 != NULL) { //runs until file2 runs out of words
             searchVal = ptr2->data;
             if(strcmp(key, searchVal) == 0) {
@@ -38,12 +40,11 @@ JSDResult jsd(List* file1, List* file2) {
                 
                 double p = ptr1->mean; //calculates mean frequency here
                 double q = ptr2->mean;
-
                 double m = 0.5 * (p + q);
 
-                double firstTerm = 0.5 * (p * log2(p / m)); //calculates KLD from here
-                double secondTerm = 0.5 * (q * log2(q / m));
-                totalJSD += (firstTerm + secondTerm);
+                // Math: 0.5 * (P * log2(P/M) + Q * log2(Q/M))
+                //calculates KLD from here
+                totalJSD += 0.5 * (p * log2(p / m) + q * log2(q / m));
                 break;
             }
             ptr2 = ptr2->next;
@@ -53,23 +54,24 @@ JSDResult jsd(List* file1, List* file2) {
             totalJSD += 0.5 * (ptr1->mean * log2(2.0));
         }
         ptr1 = ptr1->next;
-        ptr2 = file2->head;
 
     }
 
-    ptr2 = file2->head;
+    //second pass
 
+    ptr2 = file2->head;
     while(ptr2 != NULL) { //runs opposite process to check all file2 words not in first list
    
         if(ptr2->seen == 0) {          
             totalJSD += 0.5 * (ptr2->mean * log2(2.0));
         } else {
-            ptr2->seen = 0;
+            ptr2->seen = 0; //resets flag for next file comparison
         }
         
         ptr2 = ptr2->next;
 
     }
+    // Square root of the accumulated mean KLDs
     totalJSD = sqrt(totalJSD);
 
     JSDResult res;
@@ -111,9 +113,17 @@ void wfd(List** allFiles, int fileCount) {
         List* currList = allFiles[i];
         Node* ptr = currList->head;
         double adder = 0;
+        double totalWords = 0;
+
+        while(ptr != NULL) {
+            totalWords += ptr->counter;
+            ptr = ptr->next;
+        }
+
+        ptr = currList->head;
     
         while(ptr != NULL) {
-            ptr->mean = ptr->counter / (double) currList->totalCount; //sticks mean frequency into mean slot
+            ptr->mean = ptr->counter / (double) totalWords; //sticks mean frequency into mean slot
             adder = adder + ptr->mean;
             ptr = ptr->next;
         }

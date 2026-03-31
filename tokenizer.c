@@ -56,9 +56,8 @@ void buffToList(char* buffer, off_t fileSize, List* words) {
                 if (counter > 0) {
                     insert(words, word); //inserts given the given word into a node
                     wordCounter++;
-                } else {
-                    free(word);
                 }
+                free(word);
             }
                 start = end + 1;
 
@@ -69,6 +68,21 @@ void buffToList(char* buffer, off_t fileSize, List* words) {
             
         }
         
+    }
+    if(end > start) {
+        word = malloc(end + 1 - start);
+        int counter = 0;
+        for(int i = start; i < end; i++) {
+            if(isalnum((unsigned char)buffer[i]) || buffer[i] == '-') {
+                word[counter] = tolower(buffer[i]);
+                counter++;
+            }
+        }
+        word[counter] = '\0';
+        if(counter > 0) {
+            insert(words, word);
+        }
+        free(word);
     }
 }
 
