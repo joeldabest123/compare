@@ -8,8 +8,16 @@
 #include "tokenizer.h"
 #include "math.h"
 
+//Compares results and sorts in descending order
+int compareResults(const void* a, const void* b) {
+    JSDResult* resA = (JSDResult*)a;
+    JSDResult* resB = (JSDResult*)b;
+
+    return (resB->combinedCount - resA->combinedCount);
+}
+
 //Determines the jsd from 2 given files at a time
-void jsd(List* file1, List* file2) {
+JSDResult jsd(List* file1, List* file2) {
 
     Node* ptr1 = file1->head;
     Node* ptr2 = file2->head;
@@ -33,8 +41,8 @@ void jsd(List* file1, List* file2) {
 
                 double m = 0.5 * (p + q);
 
-                double firstTerm = (p * log(p / m)); //calculates KLD from here
-                double secondTerm = (q * log(q / m));
+                double firstTerm = (p * log2(p / m)); //calculates KLD from here
+                double secondTerm = (q * log2(q / m));
                 totalJSD += (firstTerm + secondTerm);
                 break;
             }
@@ -42,7 +50,7 @@ void jsd(List* file1, List* file2) {
         }
 
         if(found == 0) { //if a word from first file isn't found in second, runs process
-            totalJSD += (ptr1->mean * log(2));
+            totalJSD += (ptr1->mean * log2(2));
         }
         ptr1 = ptr1->next;
         ptr2 = file2->head;
@@ -54,7 +62,7 @@ void jsd(List* file1, List* file2) {
     while(ptr2 != NULL) { //runs opposite process to check all file2 words not in first list
    
         if(ptr2->seen == 0) {          
-            totalJSD += (ptr2->mean * log(2));
+            totalJSD += (ptr2->mean * log2(2));
         } else {
             ptr2->seen = 0;
         }
@@ -64,16 +72,37 @@ void jsd(List* file1, List* file2) {
     }
     totalJSD = sqrt(totalJSD * 0.5);
 
-    printf("%.5f %s %s\n", totalJSD, file1->name, file2->name); //prints out files compared and the JSD
+    JSDResult res;
+    res.distance = totalJSD;
+    res.name1 = file1->name;
+    res.name2 = file2->name;
+    res.combinedCount = file1->totalCount + file2->totalCount;
+    return res;
 }
 
 //loops through all possible file combos
 void looper(List** allFiles, int fileCount) {
+    int numPairs = (fileCount * (fileCount - 1)) / 2;
+    JSDResult* results = malloc(sizeof(JSDResult) * numPairs); //gets JSDResult type from jsd
+    int k = 0;
+
+    // Gathers all comparisons
     for(int i = 0; i < fileCount; i++) {
         for(int j = i + 1; j < fileCount; j++) {
-            jsd(allFiles[i], allFiles[j]);
+            results[k] = jsd(allFiles[i], allFiles[j]);
+            k++;
         }
     }
+
+    // Sort the array using qsort and whatnot
+    qsort(results, numPairs, sizeof(JSDResult), compareResults);
+
+    //prints sorted table
+    for(int i = 0; i < numPairs; i++) {
+        printf("%.5f %s %s\n", results[i].distance, results[i].name1, results[i].name2);
+    }
+
+    free(results); //frees the results from jsd
 }
 
 //finds the mean frequency from all files
