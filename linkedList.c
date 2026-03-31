@@ -54,7 +54,7 @@ Node* initializeNode (List* l, const char* word) {
         return NULL;
     }
     n->data = strdup(word); //sets up a node for each word
-    n->counter = 0; //the amount of times the word is called per file
+    n->counter = 1; //the amount of times the word is called per file
     n->mean = 0; //the mean of the word compared to all words in the file
     n->seen = 0; //if the word has been paced through or not
     n->next = NULL; //the next node/word in line
@@ -70,7 +70,6 @@ Node* search(List *l, const char *key) {
 
     while(i < l->totalCount) {
         if(strcmp(ptr->data, key) == 0) {
-            ptr->counter++;
             return ptr;
         }
         ptr = ptr->next;
@@ -81,66 +80,53 @@ Node* search(List *l, const char *key) {
 
 //alphabetizes the list so the nodes are in order (I despised writing this)
 void alphabetical(List *l, const char *key) {
+
     Node* ptr = l->head;
-    Node* prev = l->head;
-    Node* smaller = initializeNode(l, key);
-    int firstletkey = (int)key[0];
-    int firstletnode;
+    Node* prev = NULL;
 
-    int i = 1;
-    while(i < l->totalCount) { //loops through all nodes
-        firstletkey = (int)key[0]; //grabs the first letter of the key search word
-        firstletnode =(int) ptr->data[0]; //grabs the first letter of the given node
+    while(ptr != NULL) { //loops through all nodes
+        int firstletkey = (int)key[0]; //grabs the first letter of the key search word
+        int firstletnode =(int) ptr->data[0]; //grabs the first letter of the given node
 
+        //if key is smaller, spot found
         if(firstletkey < firstletnode) {
-            smaller->next = ptr;
-            if(ptr == l->head) {
-                l->head = smaller;
-                return;
-            }
-            prev->next = smaller;
-            return;
+            break;
         }
 
+        //if first letters match, keep going
         if(firstletkey == firstletnode) {
             int j = 0;
-            while(firstletkey == firstletnode) {
-                firstletkey = (int)key[j];
-                firstletnode =(int) ptr->data[j];
+            int foundSpot = 0;
+            while(1) {
+                int c1 = (int)key[j];
+                int c2 =(int) ptr->data[j];
 
-                if(firstletkey == 0) {
-                    smaller->next = ptr;
-                    if(ptr == l->head) {
-                        l->head = smaller;
-                        return;
-                    }
-                    prev->next = smaller;
-                    return;
-                } else if(firstletnode == 0) {
+                if(c1 < c2 || c1 == 0) { //key is shorter/smaller
+                    foundSpot = 1;
                     break;
-                } else if(firstletkey < firstletnode) {
-                    smaller->next = ptr;
-                    if(ptr == l->head) {
-                        l->head = smaller;
-                        return;
-                    }
-                    prev->next = smaller;
-                    return;
-                } else if(firstletkey > firstletnode) {
-                    break;
-                } else {
-                    j++;
                 }
+                if(c1 > c2 || c2 == 0) { //key is longer or larger
+                    break;
+                }
+                j++;
             }
-
+            if(foundSpot) {
+                break;
+            }
         }
-
+        
         prev = ptr;
         ptr = ptr->next;
-        i++;
-
     }
-    prev->next = smaller;
+
+    Node* smaller = initializeNode(l, key);
+    smaller->next = ptr;
+
+    if(prev == NULL) {
+        l->head = smaller; //sets new head
+    } else {
+        prev->next = smaller; //in the middle or end
+    }
 
 }
 
@@ -176,11 +162,11 @@ void clearList (List** allFiles, int fileCount) {
 
         while(ptr != NULL) {
             next = ptr->next;
-            free(temp->name); //frees path name
             free(ptr->data); //frees the word
             free(ptr); //frees the node
             ptr = next;
         }
+        free(temp->name); //frees path name
         free(temp);
 
         counter++;
